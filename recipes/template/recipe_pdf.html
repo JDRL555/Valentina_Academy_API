@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Receta</title>
+  <style>
+    /* Reset y base */
+    * { box-sizing: border-box; -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; }
+    html,body { 
+      height:100%; 
+      margin:0; 
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif; 
+      color:#111; 
+      background-image: url('https://www.bhg.com/thmb/GxMBtp5g2bf-A_xqiy4UyI7JbH8=/550x0/filters:no_upscale():strip_icc()/100231361-5bdb31f860cd4d52b227bda32b3a06aa.jpg');
+      background-size: cover;
+      background-position: center;
+      filter: contrast(0.95) saturate(0.95);
+      z-index: -2;
+    }
+
+    /* Fondo con imagen y overlay oscuro */
+    .bg {
+      position: fixed;
+      inset: 0;
+    }
+    .bg::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(rgba(0,0,0,0.55), rgba(0,0,0,0.45));
+      z-index: 0;
+    }
+
+    /* Contenedor principal centrado */
+    .page {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px;
+    }
+
+    /* Tarjeta de la receta */
+    .card {
+      width: 90%;
+      max-width: 980px;
+      border: 2px solid rgba(0,0,0,0.12);
+      border-radius: 14px;
+      box-shadow: 0 18px 40px rgba(0,0,0,0.45);
+      padding: 36px;
+      position: relative;
+      z-index: 1;
+      overflow: hidden;
+      background: rgba(251, 234, 138, 0.873);
+      margin: auto;
+    }
+
+    /* Cabezera con etiqueta y título */
+    .header {
+      display:flex;
+      align-items:center;
+      gap:16px;
+      margin-bottom: 12px;
+    }
+    h1 {
+      margin:0;
+      font-size: 34px;
+      color: #1b1b1b;
+    }
+    .subtitle {
+      margin-top:10px;
+      color:#3b3b3b;
+      font-size:16px;
+      text-align:center;
+    }
+
+    /* Layout: dos columnas (ingredientes / pasos) */
+    .content {
+      display:grid;
+      grid-template-columns: 1fr 1.35fr;
+      gap: 28px;
+      margin-top: 20px;
+      align-items:start;
+    }
+
+    .ingredients {
+      background: rgba(0, 0, 0, 0.079);
+      border-radius: 10px;
+      padding: 18px;
+      border: 1px dashed rgba(0,0,0,0.06);
+    }
+    .ingredients h2, .steps h2 {
+      margin:0 0 12px 0;
+      font-size:20px;
+      color:#111;
+    }
+    .ingredients ul {
+      margin:0;
+      padding-left:18px;
+      font-size:16px;
+      line-height:1.6;
+    }
+
+    .steps {
+      background: transparent;
+      padding: 6px 2px;
+      margin-top: 30px;
+    }
+    .step {
+      display:flex;
+      gap:14px;
+      margin-bottom:14px;
+      align-items:flex-start;
+    }
+    .step-num {
+      min-width:36px;
+      height:36px;
+      color:#111;
+      font-weight:700;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      border-radius:8px;
+      box-shadow: 0 6px 12px rgba(0,0,0,0.12);
+      font-size:15px;
+    }
+    .step-text { font-size:16px; color:#222; line-height:1.55; }
+
+    /* Footer / meta */
+    .meta {
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      margin-top: 26px;
+      gap: 12px;
+    }
+    .meta .left { font-size:14px; color:#444; }
+    .meta .right { font-size:14px; color:#444; }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <article class="card">
+      <header class="header" role="banner">
+        <div style="flex:1;">
+          <h1>{{ recipe_name }}</h1>
+          <div class="subtitle">{{ recipe_description }}</div>
+        </div>
+      </header>
+
+      <section class="content" role="main">
+        <aside class="ingredients" aria-labelledby="ingredientes-title">
+          <h2 id="ingredientes-title">Ingredientes</h2>
+          <ul>
+            {% for ingredient in recipe_ingredients %}
+              <li>{{ ingredient.name }}</li>
+            {% endfor %}
+          </ul>
+        </aside>
+
+        <div class="steps" aria-labelledby="pasos-title">
+          <h2 id="pasos-title">Pasos</h2>
+
+          <ol>
+            {% for step in recipe_steps %}
+            <li class="step">
+              <div class="step-text">{{ step }}</div>
+            </li>
+            {% endfor %}
+          </ol>
+
+        </div>
+      </section>
+    </article>
+  </div>
+</body>
+</html>
