@@ -125,7 +125,7 @@ class RecipePDFViewSet(viewsets.ModelViewSet):
     current_dir = os.path.dirname(__file__)
     template_dir = os.path.join(current_dir,"template")
 
-    config = pdfkit.configuration(wkhtmltopdf="/app/bin/wkhtmltopdf")
+    config = pdfkit.configuration(wkhtmltopdf="/usr/bin/wkhtmltopdf")
 
     env = Environment(loader=FileSystemLoader(template_dir))
     template = env.get_template("recipe_pdf.html")
