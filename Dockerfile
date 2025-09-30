@@ -1,36 +1,51 @@
 FROM ubuntu:22.04
 
-# Evita prompts interactivos como el de tzdata
 ENV DEBIAN_FRONTEND=noninteractive
 
-# Configura zona horaria por defecto
+# Instala tzdata y dependencias del sistema
 RUN apt-get update && apt-get install -y \
     tzdata \
-    && ln -fs /usr/share/zoneinfo/Etc/UTC /etc/localtime && \
-    dpkg-reconfigure -f noninteractive tzdata
-
-# Instala dependencias necesarias
-RUN apt-get update && apt-get install -y \
-    python3 \
-    python3-pip \
-    wkhtmltopdf \
+    build-essential \
+    libssl-dev \
+    zlib1g-dev \
+    libncurses5-dev \
+    libncursesw5-dev \
+    libreadline-dev \
+    libsqlite3-dev \
+    libgdbm-dev \
+    libdb5.3-dev \
+    libbz2-dev \
+    libexpat1-dev \
+    liblzma-dev \
+    libffi-dev \
+    wget \
+    xfonts-base \
+    xfonts-75dpi \
     libjpeg8 \
     libxrender1 \
     libfontconfig1 \
-    xfonts-base \
-    xfonts-75dpi \
-    && apt-get clean
+    wkhtmltopdf \
+    && ln -fs /usr/share/zoneinfo/Etc/UTC /etc/localtime && \
+    dpkg-reconfigure -f noninteractive tzdata && \
+    apt-get clean
+
+# Descarga y compila Python 3.13.5
+WORKDIR /usr/src
+RUN wget https://www.python.org/ftp/python/3.13.5/Python-3.13.5.tgz && \
+    tar xzf Python-3.13.5.tgz && \
+    cd Python-3.13.5 && \
+    ./configure --enable-optimizations && \
+    make -j$(nproc) && \
+    make altinstall
 
 # Crea directorio de trabajo
 WORKDIR /app
-
-# Copia tu proyecto
 COPY . /app
 
-# Crea entorno virtual
-RUN python3 -m venv /app/venv
+# Crea entorno virtual con Python 3.13.5
+RUN python3.13 -m venv /app/venv
 
-# Activa entorno virtual y instala dependencias
+# Instala dependencias en el entorno virtual
 RUN /app/venv/bin/pip install --upgrade pip && \
     /app/venv/bin/pip install --no-cache-dir -r requirements.txt
 
