@@ -207,7 +207,7 @@ class CourseCertificateViewSet(viewsets.ViewSet):
     current_dir = os.path.dirname(__file__)
     template_dir = os.path.join(current_dir,"template")
 
-    config = pdfkit.configuration(wkhtmltopdf=r"C:\\Program Files\\wkhtmltopdf\\bin\\wkhtmltopdf.exe")
+    config = pdfkit.configuration(wkhtmltopdf=r"wkhtmltopdf\\bin\\wkhtmltopdf.exe")
 
     env = Environment(loader=FileSystemLoader(template_dir))
     template = env.get_template("index_pdf.html")
