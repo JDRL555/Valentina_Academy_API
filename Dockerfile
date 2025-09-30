@@ -52,7 +52,5 @@ RUN pip install --upgrade pip && \
 RUN chmod +x /usr/bin/wkhtmltopdf
 
 # Comando de inicio
-CMD python manage.py makemigrations && \
-    python manage.py migrate --noinput && \
-    python manage.py collectstatic --noinput && \
+CMD python manage.py collectstatic --noinput && \
     python manage.py runserver 0.0.0.0:8000
