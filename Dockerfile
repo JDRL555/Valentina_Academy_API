@@ -41,6 +41,8 @@ RUN wget https://www.python.org/ftp/python/3.13.5/Python-3.13.5.tgz && \
 
 # Crea directorio de trabajo
 WORKDIR /app
+
+# Copia tu proyecto
 COPY . /app
 
 # Crea entorno virtual con Python 3.13.5
@@ -53,8 +55,8 @@ RUN /app/venv/bin/pip install --upgrade pip && \
 # Da permisos al binario wkhtmltopdf
 RUN chmod +x /usr/bin/wkhtmltopdf
 
+# Da permisos al script
+RUN chmod +x /app/start.sh
+
 # Comando de inicio
-CMD /app/venv/bin/python manage.py makemigrations && \
-    /app/venv/bin/python manage.py migrate --noinput && \
-    /app/venv/bin/python manage.py collectstatic --noinput && \
-    /app/venv/bin/python manage.py runserver 0.0.0.0:8000
+CMD ["/app/start.sh"]
