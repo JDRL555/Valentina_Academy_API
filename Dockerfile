@@ -4,7 +4,9 @@ FROM ubuntu:22.04
 ENV DEBIAN_FRONTEND=noninteractive
 
 # Configura zona horaria por defecto
-RUN ln -fs /usr/share/zoneinfo/Etc/UTC /etc/localtime && \
+RUN apt-get update && apt-get install -y \
+    tzdata \
+    && ln -fs /usr/share/zoneinfo/Etc/UTC /etc/localtime && \
     dpkg-reconfigure -f noninteractive tzdata
 
 # Instala dependencias necesarias
