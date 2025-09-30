@@ -1,5 +1,12 @@
 FROM ubuntu:22.04
 
+# Evita prompts interactivos como el de tzdata
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Configura zona horaria por defecto
+RUN ln -fs /usr/share/zoneinfo/Etc/UTC /etc/localtime && \
+    dpkg-reconfigure -f noninteractive tzdata
+
 # Instala dependencias necesarias
 RUN apt-get update && apt-get install -y \
     python3 \
