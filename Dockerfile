@@ -18,12 +18,18 @@ WORKDIR /app
 # Copia tu proyecto
 COPY . /app
 
-# Instala dependencias de Python
-RUN pip3 install --no-cache-dir -r requirements.txt
+# Crea entorno virtual
+RUN python3 -m venv /app/venv
+
+# Activa entorno virtual y instala dependencias
+RUN /app/venv/bin/pip install --upgrade pip && \
+    /app/venv/bin/pip install --no-cache-dir -r requirements.txt
+
+# Da permisos al binario wkhtmltopdf
+RUN chmod +x /usr/bin/wkhtmltopdf
 
 # Comando de inicio
-CMD python manage.py makemigrations && \
-    python manage.py migrate --noinput && \
-    python manage.py collectstatic --noinput && \
-    chmod +x /usr/bin/wkhtmltopdf && \
-    python manage.py runserver 0.0.0.0:8000
+CMD /app/venv/bin/python manage.py makemigrations && \
+    /app/venv/bin/python manage.py migrate --noinput && \
+    /app/venv/bin/python manage.py collectstatic --noinput && \
+    /app/venv/bin/python manage.py runserver 0.0.0.0:8000
