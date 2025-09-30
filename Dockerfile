@@ -19,17 +19,17 @@ RUN apt-get update && apt-get install -y \
     liblzma-dev \
     libffi-dev \
     wget \
-    xfonts-base \
-    xfonts-75dpi \
+    wkhtmltopdf \
     libjpeg8 \
     libxrender1 \
     libfontconfig1 \
-    wkhtmltopdf \
+    xfonts-base \
+    xfonts-75dpi \
     && ln -fs /usr/share/zoneinfo/Etc/UTC /etc/localtime && \
     dpkg-reconfigure -f noninteractive tzdata && \
     apt-get clean
 
-# Descarga y compila Python 3.13.5
+# Compila Python 3.13.5 desde fuente
 WORKDIR /usr/src
 RUN wget https://www.python.org/ftp/python/3.13.5/Python-3.13.5.tgz && \
     tar xzf Python-3.13.5.tgz && \
@@ -37,26 +37,22 @@ RUN wget https://www.python.org/ftp/python/3.13.5/Python-3.13.5.tgz && \
     ./configure --enable-optimizations && \
     make -j$(nproc) && \
     make altinstall && \
-    ln -s /usr/local/bin/python3.13 /usr/bin/python
+    ln -s /usr/local/bin/python3.13 /usr/bin/python && \
+    ln -s /usr/local/bin/pip3.13 /usr/bin/pip
 
 # Crea directorio de trabajo
 WORKDIR /app
-
-# Copia tu proyecto
 COPY . /app
 
-# Crea entorno virtual con Python 3.13.5
-RUN python3.13 -m venv /app/venv
-
-# Instala dependencias en el entorno virtual
-RUN /app/venv/bin/pip install --upgrade pip && \
-    /app/venv/bin/pip install --no-cache-dir -r requirements.txt
+# Instala dependencias globalmente
+RUN pip install --upgrade pip && \
+    pip install --no-cache-dir -r requirements.txt
 
 # Da permisos al binario wkhtmltopdf
 RUN chmod +x /usr/bin/wkhtmltopdf
 
-# Da permisos al script
-RUN chmod +x /app/start.sh
-
 # Comando de inicio
-CMD ["/app/start.sh"]
+CMD python manage.py makemigrations && \
+    python manage.py migrate --noinput && \
+    python manage.py collectstatic --noinput && \
+    python manage.py runserver 0.0.0.0:8000
